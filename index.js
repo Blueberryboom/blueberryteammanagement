@@ -1,5 +1,5 @@
 // Require the necessary discord.js classes
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+const { Client, Events, GatewayIntentBits, REST, Routes } = require('discord.js');
 require('dotenv').config();
 
 const token = process.env.TOKEN;
@@ -12,10 +12,6 @@ if (!token) {
 // Create a new client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.once(Events.ClientReady, (readyClient) => {
-  console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-});
-
 const fs = require('fs');
 const path = require('path');
 
@@ -23,6 +19,7 @@ client.commands = new Map();
 
 const commandsPath = path.join(__dirname, 'commands');
 
+// Load command files
 if (fs.existsSync(commandsPath)) {
   const commandFiles = fs.readdirSync(commandsPath)
     .filter(file => file.endsWith('.js'));
@@ -34,12 +31,12 @@ if (fs.existsSync(commandsPath)) {
   }
 }
 
-const { REST, Routes } = require('discord.js');
-
+// READY EVENT – register commands + log in message
 client.once(Events.ClientReady, async () => {
   console.log(`Ready! Logged in as ${client.user.tag}`);
 
-  const commands = [...client.commands.values()].map(cmd => cmd.data.toJSON());
+  const commands = [...client.commands.values()]
+    .map(cmd => cmd.data.toJSON());
 
   const rest = new REST({ version: '10' }).setToken(token);
 
@@ -55,6 +52,7 @@ client.once(Events.ClientReady, async () => {
   }
 });
 
+// Handle slash commands
 client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return;
 
@@ -65,12 +63,20 @@ client.on(Events.InteractionCreate, async interaction => {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
-    await interaction.reply({
-      content: 'There was an error running this command!',
-      ephemeral: true
-    });
+
+    if (interaction.replied || interaction.deferred) {
+      await interaction.followUp({
+        content: 'There was an error running this command!',
+        ephemeral: true
+      });
+    } else {
+      await interaction.reply({
+        content: 'There was an error running this command!',
+        ephemeral: true
+      });
+    }
   }
 });
 
-// Log in to Discord with your client's token
+// Log in to Discord
 client.login(token);
