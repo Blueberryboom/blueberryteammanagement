@@ -34,6 +34,27 @@ if (fs.existsSync(commandsPath)) {
   }
 }
 
+const { REST, Routes } = require('discord.js');
+
+client.once(Events.ClientReady, async () => {
+  console.log(`Ready! Logged in as ${client.user.tag}`);
+
+  const commands = [...client.commands.values()].map(cmd => cmd.data.toJSON());
+
+  const rest = new REST({ version: '10' }).setToken(token);
+
+  try {
+    await rest.put(
+      Routes.applicationCommands(client.user.id),
+      { body: commands }
+    );
+
+    console.log("✅ Slash commands registered automatically");
+  } catch (err) {
+    console.error("Failed to register commands:", err);
+  }
+});
+
 client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return;
 
