@@ -38,7 +38,7 @@ module.exports = {
       .addComponents(
         new ButtonBuilder()
           .setCustomId('how_to_join')
-          .setLabel('How do I join?')
+          .setLabel('How do I join the Minecraft server?')
           .setStyle(ButtonStyle.Primary)
       );
 
