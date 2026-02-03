@@ -14,7 +14,8 @@ const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildMembers
   ]
 });
 
@@ -41,7 +42,7 @@ if (fs.existsSync(commandsPath)) {
 client.once(Events.ClientReady, async () => {
   console.log(`Ready! Logged in as ${client.user.tag}`);
 
-  const logChannelId = "1468013210446594280"; // YOUR LOG CHANNEL ID
+  const logChannelId = "1468013210446594280";
 
   // ----- LOG BOT START -----
   const logChannel = client.channels.cache.get(logChannelId);
