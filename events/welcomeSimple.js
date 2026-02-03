@@ -24,6 +24,10 @@ module.exports = {
 
   async execute(member) {
 
+    console.log("===== JOIN EVENT FIRED =====");
+    console.log("User:", member.user?.tag);
+    console.log("Guild:", member.guild.name);
+
     const channel = member.guild.channels.cache.get(welcomeChannelId);
     if (!channel) return;
 
