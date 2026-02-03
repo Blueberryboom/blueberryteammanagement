@@ -1,6 +1,18 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
+
+// ===== CONFIG =====
+const logChannelId = "1468013210446594280";
+
+// ===== PERMISSIONS =====
+const allowedRoleIds = [
+  "1468294909420240917", // Blueberry Overlord
+  "1468294685452927059", // Administrator
+  "1468292177397285037",  // Senior Moderator
+  "1468294094403928348" // Event Team
+];
+// ==================
 
 const dataFile = path.join(__dirname, '../modapps.json');
 
@@ -27,18 +39,33 @@ module.exports = {
         .setName('message')
         .setDescription('Custom message to show')
         .setRequired(true)
-    )
-
-    // 🔒 ONLY MODS CAN USE
-    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
+    ),
 
   async execute(interaction) {
+
+    // ===== ROLE GATE =====
+    const member = interaction.member;
+
+    const hasRole = allowedRoleIds.some(id =>
+      member.roles.cache.has(id)
+    );
+
+    if (!hasRole) {
+      return interaction.reply({
+        content: "❌ You don't have permission to use this command.",
+        ephemeral: true
+      });
+    }
+    // =====================
+
     const status = interaction.options.getString('status');
     const message = interaction.options.getString('message');
 
     const data = {
       open: status === 'open',
-      message: message
+      message: message,
+      setBy: interaction.user.tag,
+      time: Date.now()
     };
 
     saveData(data);
@@ -47,5 +74,20 @@ module.exports = {
       content: `✅ Moderator applications set to **${status.toUpperCase()}**`,
       ephemeral: true
     });
+
+    // ---- LOG ----
+    const log = interaction.guild.channels.cache.get(logChannelId);
+    if (log) {
+      log.send(
+`🛡 **Mod Applications Updated**
+
+👤 By: ${interaction.user.tag}  
+📌 Status: **${status.toUpperCase()}**
+
+📝 Message:
+> ${message}`
+      );
+    }
+
   }
 };
