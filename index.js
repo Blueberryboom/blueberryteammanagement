@@ -37,10 +37,32 @@ if (fs.existsSync(commandsPath)) {
   }
 }
 
-// READY EVENT – register commands + log in message
+// ===== READY EVENT – STARTUP LOG + REGISTER COMMANDS =====
 client.once(Events.ClientReady, async () => {
   console.log(`Ready! Logged in as ${client.user.tag}`);
 
+  const logChannelId = "1468013210446594280"; // YOUR LOG CHANNEL ID
+
+  // ----- LOG BOT START -----
+  const logChannel = client.channels.cache.get(logChannelId);
+
+  if (logChannel) {
+    logChannel.send({
+      embeds: [
+        {
+          title: "Bot Started",
+          description: `The bot has started successfully`,
+          fields: [
+            { name: "User", value: client.user.tag, inline: true },
+            { name: "Time", value: `<t:${Math.floor(Date.now()/1000)}:F>`, inline: true }
+          ],
+          color: 0x57F287
+        }
+      ]
+    });
+  }
+
+  // ----- REGISTER SLASH COMMANDS -----
   const commands = [...client.commands.values()]
     .map(cmd => cmd.data.toJSON());
 
@@ -58,7 +80,7 @@ client.once(Events.ClientReady, async () => {
   }
 });
 
-// Handle slash commands
+// ===== HANDLE SLASH COMMANDS =====
 client.on(Events.InteractionCreate, async interaction => {
   if (!interaction.isChatInputCommand()) return;
 
