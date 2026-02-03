@@ -79,7 +79,7 @@ module.exports = {
     const log = interaction.guild.channels.cache.get(logChannelId);
     if (log) {
       log.send(
-`🛡 **Mod Applications Updated**
+`🎉 **Mod Applications Updated**
 
 👤 By: ${interaction.user.tag}  
 📌 Status: **${status.toUpperCase()}**
