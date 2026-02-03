@@ -1,9 +1,17 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 
+// ===== PERMISSIONS =====
+const allowedRoleIds = [
+  "1455311132628877467", // Blueberry Overlord
+  "1468035072270536867", // Senior Moderator
+  "1455311815419625482",  // Mod
+  "1455544392415842500" // Trial Mod
+];
+
 // ===== YOUR MESSAGE LIBRARY =====
 const messages = {
   partnerguidelines: `
-# 🤝 **Blueberry Network – Partner Guidelines**
+# 🤝 Blueberry Network – Partner Guidelines
 
 Thanks for being interested in partnering with us!
 By becoming a partner with **The BlueberryTeam**, you agree to the following rules.
@@ -23,32 +31,32 @@ Breaking any of these rules will result in immediate termination from our partne
 `,
 
   creatorfaq: `
-# 📘 Creator FAQ 
+# 📘 Creator FAQ
 -# V1
 
-**Q: Can I record/stream on the server?**
+**Q: Can I record/stream on the server?**  
 ✅ Yes! You’re welcome to create content on Blueberry Network. Please keep it respectful and follow server rules while recording.
 
-**Q: Do I need permission first?**
+**Q: Do I need permission first?**  
 ❌ No permission is needed for normal gameplay content!
 
-**Q: Can I show the IP in my video?**
-✅ Absolutely — this is a requirement to be part of the Creator Programme!
-"IP:* play.blueberrynet.uk
+**Q: Can I show the IP in my video?**  
+✅ Absolutely — this is a requirement to be part of the Creator Programme!  
+IP: play.blueberrynet.uk
 
-**Q: Do creators get perks?**
+**Q: Do creators get perks?**  
 ✅ Yep! Eligible creators can get:
-- YouTuber rank in discord & server
-- Free usage of the events server (1/month)
+- YouTuber rank in discord & server  
+- Free usage of the events server (1/month)  
 - Channel is advertised within the network!
 
 **Q: What’s NOT allowed in videos?**
-- Exploit tutorials
-- Breaking server rules
-- Encouraging rule breaking
+- Exploit tutorials  
+- Breaking server rules  
+- Encouraging rule breaking  
 
-**Q: What if the video I upload breaks these rules?**
-You will be immediately removed from the creator program and could be banned network-wide. We may also ask for you to remove the video of it is only a minor issue.
+**Q: What if the video I upload breaks these rules?**  
+You will be immediately removed from the creator program and could be banned network-wide. We may also ask for you to remove the video if it is only a minor issue.
 `
 };
 // ================================
@@ -70,8 +78,22 @@ module.exports = {
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
   async execute(interaction) {
-    const name = interaction.options.getString('name');
 
+    // ---- ROLE CHECK ----
+    const member = interaction.member;
+
+    const hasRole = allowedRoleIds.some(id =>
+      member.roles.cache.has(id)
+    );
+
+    if (!hasRole) {
+      return interaction.reply({
+        content: "❌ You don't have permission to use this command.",
+        ephemeral: true
+      });
+    }
+
+    const name = interaction.options.getString('name');
     const content = messages[name];
 
     if (!content) {
@@ -86,7 +108,6 @@ module.exports = {
     await interaction.reply({
       content: `✅ Sent message: **${name}**`,
       ephemeral: true
-      
     });
   }
 };
