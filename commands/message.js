@@ -13,27 +13,27 @@ const allowedRoleIds = [
 // ===== YOUR MESSAGE LIBRARY =====
 const messages = {
   partnerguidelines: `
-# 🤝 Blueberry Network – Partner Guidelines
+# 🤝 BlueberryTeam – Partner Guidelines
 
 Thanks for being interested in partnering with us!
 By becoming a partner with **The BlueberryTeam**, you agree to the following rules.
 These rules are subject to changes. In the event of a change, you will be given 2 weeks notice. 
 -# V1
 
-**1.** Your server must have no fewer than 40 human members.
+**1.** Your server must have no fewer than 30 human members.
 **2.** Being partners with us DOES NOT allow you to advertise in the server. Only authorised advertising is permitted.
 **3.** Content within the server must follow our <#1455310485363757330>.
 **4.** Represent the BlueberryTeam, The Blueberry Network, and our affiliates positively. If you are uncomfortable with us being partnered with another server, please let us know through a support ticket.
 **5.** If your server has less than 45 members, you must follow our <#1456355064678453279> channel in your server.
 **6.** The server must be advertised in an advertising/partnership specific channel and take no less than 3 seconds to view when scrolling up.
 **7.** The owner/admin of the server MUST stay in this server.
-**8.** *[NOT YET]* Add our discord bot (BBUtils) to your discord! We offer free customization of the bot too!
+**8.** *[NOT REQUIRED]* Add our discord bot (BBGames) to your discord! We offer free customization of the bot too! *[STILL IN DEVELOPMENT - DOWNTIME MAY HAPPEN EVERY FEW DAYS WHILE WE FIX CRITICAL BUGS]*
 
 Breaking any of these rules will result in immediate termination from our partners.
 `,
 
   suggestion_accepted: `
-# :burpletick: Suggestion Accepted
+# <:burpletick:1469441937978163324> Suggestion Accepted
 Thanks for making the server a better place!
 We'll aim to have your idea implemented in the next few days!
 `
