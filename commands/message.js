@@ -33,10 +33,20 @@ Breaking any of these rules will result in immediate termination from our partne
 `,
 
   suggestion_accepted: `
-# <:burpletick:1469441937978163324> Suggestion Accepted
+# <:tick:1470047223185408188> Suggestion Accepted
 Thanks for making the server a better place!
 We'll aim to have your idea implemented in the next few days!
+`,
+
+  suggestion_denied: `
+# <:cross:1470047224619859998> Suggestion Denied
+We're sorry, but after review by our staff team, your suggestion has been denied.
+`,
+
+  huh: `
+huh
 `
+  
 };
 // ================================
 
@@ -51,7 +61,9 @@ module.exports = {
         .setRequired(true)
         .addChoices(
           { name: 'Partner Guidelines', value: 'partnerguidelines' },
-          { name: 'Suggestion - Accepted', value: 'suggestion_accepted' }
+          { name: 'Suggestion - Accepted', value: 'suggestion_accepted' },
+          { name: 'Suggestion - Denied', value: 'suggestion_denied' },
+          { name: 'huh', value: 'huh' }
         )
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
