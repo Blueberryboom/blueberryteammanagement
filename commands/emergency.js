@@ -4,13 +4,14 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const allowedRoleIds = [
   "1468294909420240917", // Blueberry Overlord
   "1468294685452927059", // Administrator
-  "1468292177397285037",  // Senior Moderator
+  "1468292177397285037", // Senior Moderator
   "1468294094403928348", // Event Team
   "1455544392415842500", // Trial Mod
-  "1468294406363680800" // Moderator
+  "1468294406363680800"  // Moderator
 ];
 
 const emergencyRoleId = "1468298245594939575";   // @Mods Emergency Ping
+const emergencyChannelId = "1468298889101705414"; 
 const logChannelId = "1468298889101705414";
 
 const COOLDOWN_MINUTES = 5;
@@ -73,14 +74,24 @@ module.exports = {
       .setTimestamp()
       .setFooter({ text: "Blueberry Team Utils" });
 
-    // ----- SEND ALERT -----
-    const message = await interaction.channel.send({
+    // ----- SEND ALERT TO FIXED CHANNEL -----
+    const emergencyChannel =
+      interaction.guild.channels.cache.get(emergencyChannelId);
+
+    if (!emergencyChannel) {
+      return interaction.reply({
+        content: "❌ Emergency channel not found! Check bot config.",
+        ephemeral: true
+      });
+    }
+
+    const message = await emergencyChannel.send({
       content: `<@&${emergencyRoleId}>`,
       embeds: [embed]
     });
 
     await interaction.reply({
-      content: "🚨 Emergency alert sent!",
+      content: "🚨 Emergency alert sent to #emergency!",
       ephemeral: true
     });
 
@@ -93,7 +104,7 @@ module.exports = {
         .setColor(0xED4245)
         .addFields(
           { name: "User", value: interaction.user.tag, inline: true },
-          { name: "Channel", value: `<#${interaction.channel.id}>`, inline: true },
+          { name: "Executed In", value: `<#${interaction.channel.id}>`, inline: true },
           { name: "Reason", value: reason }
         )
         .setDescription(`[Jump to alert](${message.url})`)
@@ -101,6 +112,5 @@ module.exports = {
 
       log.send({ embeds: [logEmbed] });
     }
-
   }
 };
