@@ -12,6 +12,13 @@ const partnerRoleId = "1468302227075498105";
 const logChannelId = "1468013210446594280";
 
 const MASS_DM_DELAY = 1500; // 1.5s between messages
+
+// ✍ YOUR SIGNATURE
+const SIGNATURE = `
+—
+**Thanks,**
+<@145530694012345678> | The BlueberryTeam Management
+`;
 // ==================
 
 module.exports = {
@@ -71,9 +78,12 @@ module.exports = {
       });
     }
 
+    // Add signature to message
+    const finalMessage = text + SIGNATURE;
+
     const embed = new EmbedBuilder()
-      .setTitle("📩 Message from the BlueberryTeam")
-      .setDescription(text)
+      .setTitle("📩 Message from BlueberryTeam")
+      .setDescription(finalMessage)
       .setColor(0x5865F2)
       .setFooter({ text: "You received this because you are a partner" })
       .setTimestamp();
@@ -90,7 +100,7 @@ module.exports = {
           ephemeral: true
         });
 
-        log(interaction, `DM to ${user.tag}`, text);
+        log(interaction, `DM to ${user.tag}`, finalMessage);
 
       } catch {
         await interaction.reply({
@@ -143,7 +153,7 @@ module.exports = {
       log(
         interaction,
         `MASS DM to partners`,
-        `${text}\n\nSent: ${success} | Failed: ${failed}`
+        `${finalMessage}\n\nSent: ${success} | Failed: ${failed}`
       );
     }
   }
