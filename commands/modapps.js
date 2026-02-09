@@ -1,20 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
-const fs = require('fs');
-const path = require('path');
-
-const dataFile = path.join(__dirname, '../modapps.json');
-
-// Load status from file or default
-function loadData() {
-  if (!fs.existsSync(dataFile)) {
-    return {
-      open: false,
-      message: "Moderator applications are currently CLOSED. We'll let you know when they're back in <#1455310485363757331>!"
-    };
-  }
-
-  return JSON.parse(fs.readFileSync(dataFile));
-}
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const db = require('../database/db');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -22,15 +7,49 @@ module.exports = {
     .setDescription('Shows moderator application status'),
 
   async execute(interaction) {
-    const data = loadData();
+
+    // ----- LOAD FROM DATABASE -----
+    const [rows] = await db.query(
+      "SELECT open, message, set_by, time FROM mod_applications WHERE id = 1"
+    );
+
+    const data = rows?.[0];
+
+    // Fallback if somehow missing
+    const open = data?.open ?? false;
+    const message =
+      data?.message ||
+      "Moderator applications are currently CLOSED. We'll let you know when they're back!";
 
     const embed = new EmbedBuilder()
       .setTitle('🫐 Moderator Applications')
-      .setColor(data.open ? 0x57F287 : 0xED4245)
-      .setDescription(data.message)
-      .setFooter({ text: 'BlueberryTeam Utils • Hosted on the Blueberry Network' })
+      .setColor(open ? 0x57F287 : 0xED4245)
+      .setDescription(message)
+      .addFields(
+        {
+          name: "Status",
+          value: open ? "🟢 **OPEN**" : "🔴 **CLOSED**",
+          inline: true
+        },
+        {
+          name: "Last Updated By",
+          value: data?.set_by || "System",
+          inline: true
+        },
+        {
+          name: "Updated",
+          value: data?.time
+            ? `<t:${Math.floor(data.time / 1000)}:R>`
+            : "Unknown",
+          inline: true
+        }
+      )
+      .setFooter({
+        text: 'BlueberryTeam Management• Hosted on the Blueberry Network'
+      })
       .setTimestamp();
 
     await interaction.reply({ embeds: [embed] });
+
   }
 };
