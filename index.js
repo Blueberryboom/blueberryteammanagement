@@ -48,9 +48,9 @@ client.once(Events.ClientReady, async () => {
   const db = require('./database/db');
 
   try {
-    await db.init();
+    await db.initDatabase();
   } catch (err) {
-    console.error("❌ DATABASE FAILED TO LOAD:", err);
+    console.log("❌ DATABASE FAILED TO LOAD:", err);
   }
   // ======================================
 
