@@ -1,6 +1,8 @@
 const { 
-  SlashCommandBuilder, 
-  PermissionFlagsBits 
+  SlashCommandBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle
 } = require('discord.js');
 
 const db = require('../database/db');
@@ -88,7 +90,8 @@ module.exports = {
     // ===================================================
     if (sub === 'closerequest') {
 
-      const targetUser = await interaction.guild.members.fetch(ticket.user_id)
+      const targetUser = await interaction.guild.members
+        .fetch(ticket.user_id)
         .catch(() => null);
 
       if (!targetUser) {
@@ -123,6 +126,7 @@ module.exports = {
       return interaction.reply({
         content: "📩 Close request sent to user.",
         ephemeral: true
+        
       });
     }
   }
