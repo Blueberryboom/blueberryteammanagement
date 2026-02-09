@@ -7,7 +7,7 @@ const {
   ButtonStyle
 } = require('discord.js');
 
-const db = require('../db');
+const db = require('../database/db');
 const config = require('../config/tickets');
 
 module.exports = {
