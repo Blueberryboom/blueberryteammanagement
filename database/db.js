@@ -46,6 +46,22 @@ async function initDatabase() {
     )
   `);
 
+  await pool.query(`
+  CREATE TABLE IF NOT EXISTS mod_applications (
+    id INT PRIMARY KEY DEFAULT 1,
+    open BOOLEAN,
+    message TEXT,
+    set_by VARCHAR(64),
+    time BIGINT
+  )
+`);
+
+// ensure row exists
+await pool.query(`
+  INSERT IGNORE INTO mod_applications (id, open, message, set_by, time)
+  VALUES (1, 0, 'Applications are closed.', 'system', UNIX_TIMESTAMP())
+`);
+
   console.log("🟢 Database tables ensured");
 }
 
