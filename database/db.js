@@ -19,19 +19,14 @@ async function init() {
 
   await pool.query(`
   CREATE TABLE IF NOT EXISTS tickets (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-
-    channel_id VARCHAR(32),
-    user_id VARCHAR(32),
-    type VARCHAR(32),
-
-    claimed_by VARCHAR(32) DEFAULT NULL,
-
-    status ENUM('open','closed') DEFAULT 'open',
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    closed_at TIMESTAMP NULL
-  );`);
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id VARCHAR(32),
+  channel_id VARCHAR(32),
+  type VARCHAR(20),
+  claimed_by VARCHAR(32) DEFAULT NULL,
+  status ENUM('open','closed') DEFAULT 'open',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);`);
 
   await pool.query(`
   CREATE TABLE IF NOT EXISTS ticket_logs (
