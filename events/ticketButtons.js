@@ -16,13 +16,12 @@ module.exports = {
       'ticket_closereason'
     ].includes(id)) return;
 
-    // ----- GET TICKET FROM DB -----
     const [rows] = await db.query(
       "SELECT * FROM tickets WHERE channel_id = ?",
       [interaction.channel.id]
     );
 
-    const ticket = rows?.[0];
+    const ticket = Array.isArray(rows) ? rows[0] : null;
 
     if (!ticket) {
       return interaction.reply({
@@ -31,35 +30,34 @@ module.exports = {
       });
     }
 
-    // ----- CLAIM TICKET -----
-    if (id === 'ticket_claim') {
+    if (id === 'ticket_claim')
       return claimTicket(interaction, ticket);
-    }
 
-    // ----- CLOSE (NO REASON) -----
-    if (id === 'ticket_close') {
+    if (id === 'ticket_close')
       return closeTicket(interaction, ticket, "No reason provided");
-    }
 
-    // ----- CLOSE WITH REASON -----
-    if (id === 'ticket_closereason') {
+    if (id === 'ticket_closereason')
       return askReason(interaction, ticket);
-   
-    }
   }
 };
 
-
+// ================= FUNCTIONS =================
 
 async function claimTicket(interaction, ticket) {
 
-  // Only staff can claim
   const isStaff = config.permissions[ticket.type].viewRoles
     .some(id => interaction.member.roles.cache.has(id));
 
   if (!isStaff) {
     return interaction.reply({
       content: "❌ Only staff can claim tickets.",
+      ephemeral: true
+    });
+  }
+
+  if (ticket.claimed_by) {
+    return interaction.reply({
+      content: "❌ This ticket is already claimed.",
       ephemeral: true
     });
   }
@@ -85,9 +83,10 @@ async function claimTicket(interaction, ticket) {
   await interaction.reply({
     content: "You claimed this ticket.",
     ephemeral: true
- 
   });
 }
+
+// ------------------------------------------------
 
 async function closeTicket(interaction, ticket, reason) {
 
@@ -111,10 +110,12 @@ async function closeTicket(interaction, ticket, reason) {
     [ticket.id, "CLOSE", interaction.user.id, reason]
   );
 
-  // Lock channel
   await interaction.channel.permissionOverwrites.edit(
     ticket.user_id,
-    { ViewChannel: false }
+    {
+      ViewChannel: false,
+      SendMessages: false
+    }
   );
 
   await interaction.channel.send({
@@ -126,8 +127,8 @@ async function closeTicket(interaction, ticket, reason) {
     ]
   });
 
-  // LOG
   const log = interaction.guild.channels.cache.get(config.logChannelId);
+
   if (log) {
     log.send({
       embeds: [
@@ -145,10 +146,10 @@ async function closeTicket(interaction, ticket, reason) {
   await interaction.reply({
     content: "Ticket closed.",
     ephemeral: true
-    
   });
 }
 
+// ------------------------------------------------
 
 async function askReason(interaction, ticket) {
 
@@ -169,7 +170,11 @@ async function askReason(interaction, ticket) {
 
   collector.on('collect', async msg => {
     await msg.delete().catch(() => {});
-    await closeTicket(interaction, ticket, msg.content);
+    try {
+      await closeTicket(interaction, ticket, msg.content);
+    } catch (err) {
+      console.error(err);
+    }
   });
 
   collector.on('end', c => {
