@@ -10,10 +10,61 @@ const {
 const db = require('../database/db');
 const config = require('../config/tickets');
 
+// ====== CUSTOM START MESSAGES PER TYPE ======
+const startMessages = {
+  partner: `<:312668partner:1470082523026686219> **Partnership Application**
+
+Thanks for your interest in partnering with us!
+While you wait for us to see this ticket, please let us know:
+- Your server invite link  
+- Member count  
+- What your server is about
+- Where our advert will be posted 
+
+A server <@&1470536730779062433> will get back to you soon!`,
+
+  creator: `<:201953camera:1470564956826243155> **Verified Creator Application**
+
+Hi! While you wait for us to see this ticket, please let us know:
+- Your channel link 
+- Average views 
+- Subscriber count
+- Content type (long-form, shorts, live streams)
+- How you’ll promote the network or server
+
+Our <@&1468294094403928348> or a <@&1470536730779062433> will review your application shortly!`,
+
+  staff: `<:990644moderatorroleicon:1470566354196369491> **Staff Application**
+
+Thanks for applying for staff!
+While you wait for us to review your application, please answer:
+• Are you familiar with the server's rules and structure?
+• Previous experience (not required)
+• Why you want to join 
+• Strengths & weaknesses  
+• Timezone & availability`,
+
+  other: `❓ **General Support**
+
+Tell us what you need help with and we’ll assist as soon as possible!
+Please note that general support tickets generally take longer for us to respond to due to being at a lower priority compared to other ticket types!`
+};
+
+// ============================================
+
+async function modAppsOpen() {
+  const [rows] = await db.query(
+    "SELECT open, message FROM mod_applications WHERE id = 1"
+  );
+
+  return rows?.[0] || { open: false, message: "Applications closed." };
+}
+
 module.exports = {
   name: 'interactionCreate',
 
   async execute(interaction) {
+
     if (!interaction.isStringSelectMenu()) return;
     if (interaction.customId !== 'ticket_create') return;
 
@@ -27,13 +78,34 @@ module.exports = {
       });
     }
 
+    // ======================================================
+    // 🛑 BLOCK STAFF TICKETS IF MOD APPS CLOSED
+    // ======================================================
+    if (type === "staff") {
+      const status = await modAppsOpen();
+
+      if (!status.open) {
+        return interaction.reply({
+          content:
+`❌ Moderator applications are currently **CLOSED**
+
+${status.message}`,
+          ephemeral: true
+        });
+      }
+    }
+
     // ----- CHECK MAX OPEN -----
     const [existing] = await db.query(
       "SELECT COUNT(*) AS count FROM tickets WHERE user_id = ? AND status = 'open'",
       [interaction.user.id]
     );
 
-    if (existing.count >= config.settings.maxOpenTicketsPerUser) {
+    const count = Array.isArray(existing)
+      ? existing[0]?.count
+      : existing?.count;
+
+    if (count >= config.settings.maxOpenTicketsPerUser) {
       return interaction.reply({
         content: "❌ You already have an open ticket!",
         ephemeral: true
@@ -91,16 +163,13 @@ module.exports = {
       [interaction.user.id, channel.id, type]
     );
 
-    // ----- START EMBED -----
+    // ----- START EMBED (DIFFERENT PER TYPE) -----
     const embed = new EmbedBuilder()
       .setTitle(ticketType.name)
       .setColor(0x5865F2)
       .setDescription(
-`Welcome ${interaction.user} 👋
-
-Please explain your request in as much detail as possible.
-
-A ${ticketType.name} team member will help soon.`
+        startMessages[type] ||
+        "Please describe your request in detail."
       )
       .addFields(
         { name: "Category", value: ticketType.name, inline: true },
@@ -131,6 +200,7 @@ A ${ticketType.name} team member will help soon.`
       content: config.settings.autoPingOnCreate
         ? ticketType.viewRoles.map(r => `<@&${r}>`).join(" ")
         : null,
+
       embeds: [embed],
       components: [row]
     });
@@ -142,7 +212,7 @@ A ${ticketType.name} team member will help soon.`
       log.send({
         embeds: [
           new EmbedBuilder()
-            .setTitle("🎟 Ticket Created")
+            .setTitle("<:3169blurpleverified1:1470050180601479178> Ticket Created")
             .setColor(0x57F287)
             .addFields(
               { name: "User", value: interaction.user.tag, inline: true },
@@ -155,7 +225,7 @@ A ${ticketType.name} team member will help soon.`
     }
 
     await interaction.reply({
-      content: `✅ Ticket created: ${channel}`,
+      content: `<:3169blurpleverified1:1470050180601479178> Ticket created: ${channel}`,
       ephemeral: true
     });
   }
