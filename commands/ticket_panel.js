@@ -2,7 +2,8 @@ const {
   SlashCommandBuilder, 
   EmbedBuilder, 
   ActionRowBuilder, 
-  StringSelectMenuBuilder 
+  StringSelectMenuBuilder,
+  ChannelType
 } = require('discord.js');
 
 // ===== CONFIG =====
@@ -15,7 +16,16 @@ const allowedRoleIds = [
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('ticket_panel')
-    .setDescription('Send the ticket creation panel'),
+    .setDescription('Send the ticket creation panel')
+
+    // ⭐ NEW OPTION
+    .addChannelOption(option =>
+      option
+        .setName('channel')
+        .setDescription('Channel to send panel to (optional)')
+        .addChannelTypes(ChannelType.GuildText)
+        .setRequired(false)
+    ),
 
   async execute(interaction) {
 
@@ -31,13 +41,25 @@ module.exports = {
       });
     }
 
+    // ----- GET TARGET CHANNEL -----
+    const targetChannel =
+      interaction.options.getChannel('channel') ||
+      interaction.channel;
+
     // ----- EMBED -----
     const embed = new EmbedBuilder()
-      .setTitle("🎟 Create a Ticket")
+      .setTitle("<:543581paperplane:1470555820453396573> Contact Us")
       .setDescription(
-`Select a category below to open a ticket.
+`**Contact us via the select menu below!**
+Here you can contact us! Please refer to <#1456373556932772030> for more info.
+Ticket options include:
+- Partnerships
+- Apply for creator 
+- Mod Applications 
+- Other
 
-Our team will respond as soon as possible!`
+<a:85951rfalert:1470557230674870476> **Please note:** All tickets are reviewed and responded to by the BBT team!
+Troll tickets will lead to punishments - it wastes our time!`
       )
       .setColor(0x5865F2);
 
@@ -49,34 +71,38 @@ Our team will respond as soon as possible!`
         {
           label: "Become a Partner",
           description: "Apply to partner with our network",
-          value: "partner",
-          emoji: "🤝"
+          value: "partner"
         },
         {
           label: "Verified Creator",
           description: "Apply for creator rank",
-          value: "creator",
-          emoji: "🎬"
+          value: "creator"
         },
         {
           label: "Staff Application",
           description: "Apply to join the staff team",
-          value: "staff",
-          emoji: "🛡"
+          value: "staff"
         },
         {
           label: "Other Support",
           description: "General help / questions",
-          value: "other",
-          emoji: "❓"
+          value: "other"
         }
       );
 
     const row = new ActionRowBuilder().addComponents(menu);
 
-    await interaction.reply({
+    // ----- SEND PANEL -----
+    await targetChannel.send({
       embeds: [embed],
       components: [row]
+    });
+
+    // ----- CONFIRM TO MOD -----
+    await interaction.reply({
+      content: `✅ Ticket panel sent to ${targetChannel}`,
+      ephemeral: true
+   
     });
   }
 };
