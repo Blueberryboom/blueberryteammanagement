@@ -165,7 +165,6 @@ ${status.message}`,
 
     // ----- START EMBED (DIFFERENT PER TYPE) -----
     const embed = new EmbedBuilder()
-      .setTitle(ticketType.name)
       .setColor(0x5865F2)
       .setDescription(
         startMessages[type] ||
