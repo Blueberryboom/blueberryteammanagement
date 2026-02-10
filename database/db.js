@@ -76,5 +76,21 @@ module.exports = {
     return pool.execute(sql, params);
   },
 
+  async setGoal(amount, user) {
+    await pool.query(
+      `INSERT INTO member_goal (id, goal, set_by, time)
+       VALUES (1, ?, ?, ?)
+       ON DUPLICATE KEY UPDATE
+         goal = VALUES(goal),
+         set_by = VALUES(set_by),
+         time = VALUES(time)`,
+      [
+        amount,
+        user.tag,
+        Date.now()
+      ]
+    );
+  },
+
   initDatabase
 };
