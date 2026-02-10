@@ -12,16 +12,19 @@ module.exports = {
   name: 'interactionCreate',
 
   async execute(interaction) {
+
     if (!interaction.isButton()) return;
 
     const id = interaction.customId;
 
+    // 👇 ADDED ticket_keepopen_request
     if (![
       'ticket_claim',
       'ticket_close',
       'ticket_closereason',
       'ticket_close_confirm',
-      'ticket_close_cancel'
+      'ticket_close_cancel',
+      'ticket_keepopen_request'
     ].includes(id)) return;
 
     const [rows] = await db.query(
@@ -56,6 +59,10 @@ module.exports = {
         embeds: [],
         components: []
       });
+
+    // 👇 NEW
+    if (id === 'ticket_keepopen_request')
+      return keepOpenRequest(interaction, ticket);
   }
 };
 
@@ -94,7 +101,7 @@ async function claimTicket(interaction, ticket) {
     embeds: [
       new EmbedBuilder()
         .setColor(0x57F287)
-        .setTitle(`<:3169blurpleverified1:1470050180601479178> Ticket claimed!`)
+        .setTitle("<:3169blurpleverified1:1470050180601479178> Ticket claimed!")
         .setDescription(`Your ticket will be handled by ${interaction.user}`)
     ]
   });
@@ -109,16 +116,18 @@ async function claimTicket(interaction, ticket) {
 
 async function askCloseConfirm(interaction, ticket) {
 
-  // NO STAFF CHECK HERE → ANYONE CAN CLOSE
+  // ANYONE CAN CLOSE – no staff check
 
   const embed = new EmbedBuilder()
     .setTitle("<a:85951rfalert:1470557230674870476> Confirm Ticket Closure")
     .setColor(0xED4245)
-    .setDescription(`Are you sure you want to close this ticket?
+    .setDescription(
+`Are you sure you want to close this ticket?
 
-• Channel will be **deleted**
-• Ticket will be **removed from database**
-• This cannot be undone`);
+• Channel will be **deleted**  
+• Ticket will be **removed from database**  
+• This cannot be undone`
+    );
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
@@ -141,22 +150,63 @@ async function askCloseConfirm(interaction, ticket) {
 
 // ------------------------------------------------
 
+async function keepOpenRequest(interaction, ticket) {
+
+  // Build staff ping string from config
+  const staffRoles =
+    config.permissions[ticket.type].viewRoles
+      .map(id => `<@&${id}>`)
+      .join(" ");
+
+  const embed = new EmbedBuilder()
+    .setTitle("🟡 User Wants Ticket To Stay Open")
+    .setColor(0xFEE75C)
+    .setDescription(
+`${interaction.user} has chosen to keep this ticket open!`
+    )
+    .addFields(
+      { name: "Ticket", value: interaction.channel.name, inline: true },
+      { name: "User", value: interaction.user.tag, inline: true }
+    )
+    .setTimestamp();
+
+  await interaction.channel.send({
+    content: staffRoles,
+    embeds: [embed]
+  });
+
+  await db.query(
+    "INSERT INTO ticket_logs (ticket_id, action, moderator, info) VALUES (?, ?, ?, ?)",
+    [
+      ticket.id,
+      "KEEP_OPEN",
+      interaction.user.id,
+      "User requested ticket stay open"
+    ]
+  );
+
+  await interaction.reply({
+    content: "✅ Staff have been notified that you want this ticket to stay open.",
+    ephemeral: true
+  });
+}
+
+// ------------------------------------------------
+
 async function confirmClose(interaction, ticket, reason) {
 
-  // Log deletion
   await db.query(
     "INSERT INTO ticket_logs (ticket_id, action, moderator, info) VALUES (?, ?, ?, ?)",
     [ticket.id, "DELETE", interaction.user.id, reason]
   );
 
-  // Remove ticket from DB
   await db.query(
     "DELETE FROM tickets WHERE id = ?",
     [ticket.id]
   );
 
-  // Send to log channel
-  const log = interaction.guild.channels.cache.get(config.logChannelId);
+  const log =
+    interaction.guild.channels.cache.get(config.logChannelId);
 
   if (log) {
     log.send({
@@ -174,7 +224,6 @@ async function confirmClose(interaction, ticket, reason) {
     });
   }
 
-  // Acknowledge BEFORE deleting channel
   try {
     await interaction.reply({
       content: "🗑 Deleting ticket...",
@@ -182,7 +231,6 @@ async function confirmClose(interaction, ticket, reason) {
     });
   } catch {}
 
-  // Finally delete channel
   await interaction.channel.delete().catch(() => {});
 }
 
@@ -209,7 +257,7 @@ async function askReason(interaction, ticket) {
 
     await msg.delete().catch(() => {});
 
-    // FIXED: no double-reply crash
+    // FIXED – no double reply crash
     await confirmClose(interaction, ticket, msg.content);
   });
 
