@@ -7,8 +7,7 @@ const logChannelId = "1468013210446594280";
 const allowedRoleIds = [
   "1468294909420240917", // Overlord
   "1468294685452927059", // Admin
-  "1468292177397285037", // Senior Mod
-  "1468294094403928348"  // Event Team
+  "1468292177397285037" // Senior Mod
 ];
 
 module.exports = {
