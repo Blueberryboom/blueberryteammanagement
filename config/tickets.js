@@ -19,7 +19,7 @@ module.exports = {
   modRoles: [
     "1468292177397285037", // Senior Moderator
     "1468294406363680800", // Moderator
-    "1455544392415842500"  // Trial Mod
+    "1455544392415842500",  // Trial Mod
     "1470536730779062433", // Growth Manager
     "1468294094403928348" // Event Team
   ],
@@ -78,7 +78,7 @@ module.exports = {
   // =========================================
 
   settings: {
-    maxOpenTicketsPerUser: 1,
+    maxOpenTicketsPerUser: 2,
 
     naming: {
       prefix: "ticket",
