@@ -2,13 +2,15 @@ const {
   SlashCommandBuilder,
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonStyle
+  ButtonStyle,
+  EmbedBuilder
 } = require('discord.js');
 
 const db = require('../database/db');
 const config = require('../config/tickets');
 
 module.exports = {
+
   data: new SlashCommandBuilder()
     .setName('ticket')
     .setDescription('Ticket moderation commands')
@@ -101,20 +103,37 @@ module.exports = {
         });
       }
 
+      const embed = new EmbedBuilder()
+        .setTitle("📩 Ticket Close Request")
+        .setColor(0x5865F2)
+        .setDescription(
+`Hey ${targetUser}!  
+Staff have asked if this ticket can now be closed.
+
+Please choose an option below:`
+        )
+        .addFields(
+          { name: "Ticket", value: interaction.channel.name, inline: true },
+          { name: "Requested By", value: interaction.user.tag, inline: true }
+        )
+        .setTimestamp();
+
       const row = new ActionRowBuilder().addComponents(
+
         new ButtonBuilder()
           .setCustomId('ticket_close')
           .setLabel('Yes, close it')
           .setStyle(ButtonStyle.Danger),
 
         new ButtonBuilder()
-          .setCustomId('ticket_keepopen')
-          .setLabel('Keep it open')
+          .setCustomId('ticket_keepopen_request')
+          .setLabel('No, keep it open')
           .setStyle(ButtonStyle.Secondary)
       );
 
       await interaction.channel.send({
-        content: `${targetUser}, would you like to close this ticket?`,
+        content: `${targetUser}`,
+        embeds: [embed],
         components: [row]
       });
 
@@ -126,7 +145,6 @@ module.exports = {
       return interaction.reply({
         content: "📩 Close request sent to user.",
         ephemeral: true
-        
       });
     }
   }
