@@ -24,40 +24,36 @@ module.exports = {
 
   async execute(interaction) {
 
-    // ---- PERMISSION ----
-    const hasRole = allowedRoleIds.some(id =>
-      interaction.member.roles.cache.has(id)
-    );
+  const hasRole = allowedRoleIds.some(id =>
+    interaction.member.roles.cache.has(id)
+  );
 
-    if (!hasRole) {
-      return interaction.reply({
-        content: "❌ You don't have permission.",
-        ephemeral: true
-      });
-    }
-
-    const amount =
-      interaction.options.getInteger('amount');
-
-    // ---- SAVE TO DATABASE ----
-    await db.setGoal(amount, interaction.user);
-
-    await interaction.reply({
-      content: `✅ Member goal set to **${amount}**`,
+  if (!hasRole) {
+    return interaction.reply({
+      content: "❌ You don't have permission.",
       ephemeral: true
     });
-
-    // ---- LOG ----
-    const log =
-      interaction.guild.channels.cache.get(logChannelId);
-
-    if (log) {
-      log.send(
-`🎯 **Member Goal Updated**
-👤 By: ${interaction.user.tag}
-🎯 Goal: ${amount}`
-      );
- 
-    }
   }
-};
+
+  const amount = interaction.options.getInteger('amount');
+
+  // ---- SAVE ----
+  await db.setGoal(amount, interaction.user);
+
+  await interaction.reply({
+    content: `✅ Member goal set to **${amount}**`,
+    ephemeral: true
+  });
+
+  // ---- LOG ----
+  const log =
+    interaction.guild.channels.cache.get(logChannelId);
+
+  if (log) {
+    log.send(
+      `🎯 **Member Goal Updated**\n` +
+      `👤 By: ${interaction.user.tag}\n` +
+      `🎯 Goal: ${amount}`
+    );
+  }
+}
