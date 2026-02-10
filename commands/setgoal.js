@@ -54,6 +54,6 @@ module.exports = {
       `🎯 **Member Goal Updated**\n` +
       `👤 By: ${interaction.user.tag}\n` +
       `🎯 Goal: ${amount}`
-    });
+    );
   }
 }
