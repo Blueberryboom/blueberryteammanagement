@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ButtonBuilder, ActionRowBuilder } = require('discord.js');
 
 // ===== CONFIG =====
 const advertisingChannelId = "1471545487424356382";
@@ -43,12 +43,22 @@ In order to advertise here, you need the <@&1460351285327954011>, <@&14683020587
         )
         .setFooter({ text: "Failure to follow rules may result in a timeout." });
 
-      const sent = await message.channel.send({ embeds: [embed] });
+      // Create a button for Buy Me A Coffee
+      const button = new ButtonBuilder()
+        .setLabel('Paid Access Roles')
+        .setStyle('LINK')
+        .setURL('https://www.buymeacoffee.com/Blueberryboom'); // Replace with your actual URL
+
+      // Create an action row containing the button
+      const row = new ActionRowBuilder().addComponents(button);
+
+      const sent = await message.channel.send({ embeds: [embed], components: [row] });
 
       lastStickyMessageId = sent.id;
 
     } catch (err) {
       console.error("Sticky error:", err);
+      
     }
   }
 };
