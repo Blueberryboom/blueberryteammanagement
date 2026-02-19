@@ -52,13 +52,14 @@ module.exports = {
       .addComponents(
         new ButtonBuilder()
           .setCustomId('how_to_join')
-          .setLabel('How do I join the Minecraft server?')
+          .setLabel('Minecraft IP')
           .setStyle(ButtonStyle.Primary)
       );
 
     await channel.send({
       content:
-`👋 Welcome ${member}! You're member **#${memberCount}** on the server! YAY`,
+`👋 Welcome ${member}! You're member **#${memberCount}** on the server! :)
+Feel free to checkout <#1456354831697445017> and <#1455310485363757330>, then introduce yourself in <#1455310485363757338>!`,
       components: [row]
     });
 
@@ -72,7 +73,7 @@ module.exports = {
 
       if (general) {
         general.send(
-          `🎉 **WE HIT ${goal} MEMBERS!**\nThanks y'all`
+          `🎉 **WE HIT ${goal} MEMBERS!**\nWOOO`
         );
       }
     }
