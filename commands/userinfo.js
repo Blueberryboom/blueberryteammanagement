@@ -42,10 +42,10 @@ module.exports = {
         iconURL: target.displayAvatarURL({ dynamic: true })
       })
       .setThumbnail(target.displayAvatarURL({ dynamic: true, size: 256 }))
-      .setDescription("### 👤 User Information")
+      .setDescription("### User Information")
       .addFields(
         {
-          name: "🧾 General",
+          name: "General",
           value:
 `**User:** ${target}
 **ID:** \`${target.id}\`
@@ -55,7 +55,7 @@ module.exports = {
           inline: false
         },
         {
-          name: "🏠 Server",
+          name: "Server",
           value:
 `**Joined:** <t:${Math.floor(member.joinedTimestamp / 1000)}:R>
 **Highest Role:** ${member.roles.highest}
@@ -64,7 +64,7 @@ module.exports = {
           inline: false
         },
         {
-          name: `🎭 Roles (${member.roles.cache.size - 1})`,
+          name: `Roles (${member.roles.cache.size - 1})`,
           value: roles.length > 1024 ? "Too many roles to display." : roles,
           inline: false
         }
