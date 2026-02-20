@@ -52,8 +52,24 @@ We're sorry, but after review by our staff team, your suggestion has been denied
 We will need time to think about this suggestion.
 This may be due to existing server updates or other things that require our attention.
 Thanks!
-`
+`,
   
+  creator_guidelines: `
+# <:youtube:1473318721996193834> BlueberryTeam – Creator Requirements
+
+Thanks for being interested in becoming a creator on our network!
+By becoming a creator on the **Blueberry Network**, you agree to the following requirements.
+These requirements are subject to changes. In the event of a change, you will be given 1 weeks notice. 
+-# V1
+
+**1.** Your channel must have 30+ subscribers.
+**2.** You must upload at least once every month.
+**3.** Content within the channel must follow our <#1455310485363757330>.
+**4.** Represent the BlueberryTeam, The Blueberry Network, and our affiliates positively.
+**5.** Your average view count to recieve perks must be more than 1k+ views!
+**6.** The server must be mentioned every 2-4 videos.
+`
+
 };
 // ================================
 
