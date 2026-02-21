@@ -1,16 +1,16 @@
 const { EmbedBuilder } = require('discord.js');
 
 // ===== CONFIG =====
-const channelId = 'YOUR_CHANNEL_ID_HERE';
+const channelId = '1472985988228976753';
 const intervalMinutes = 30;
 // ==================
 
 const messages = [
-  "🎮 Play on the Blueberry Network today!",
-  "📢 Check out our latest updates in <#1455310485363757330>!",
-  "⭐ Want to partner with us? Open a ticket!",
-  "📺 Subscribe to our YouTube for exclusive content!",
-  "💬 Got suggestions? Use the suggestions channel!"
+  "Is someone being toxic or breaking our rules? Report them in the discord!",
+  "Use /discord link to connect your discord and sync roles!",
+  "Our server is not the place to be toxic! Being toxic will result in a ban.",
+  "Support us via Buy Me A Coffee for special perks! https://buymeacoffee.com/blueberryboom",
+  "Got a suggestion? Let us know in discord! "
 ];
 
 module.exports = (client) => {
