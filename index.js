@@ -142,5 +142,7 @@ if (fs.existsSync(eventsPath)) {
   }
 }
 
+require('./systems/autoMessage')(client);
+
 // Log in to Discord
 client.login(token);
