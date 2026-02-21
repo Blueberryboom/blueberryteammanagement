@@ -51,7 +51,7 @@ module.exports = {
       .setTitle("<:543581paperplane:1470555820453396573> Contact Us")
       .setDescription(
 `**Contact us via the select menu below!**
-Here you can contact us! Please refer to <#1456373556932772030> for more info.
+Here you can contact us!
 Ticket options include:
 - Partnerships
 - Apply for creator 
