@@ -11,7 +11,7 @@ const messages = [
   "Our server is not the place to be toxic! Being toxic will result in a ban.",
   "Support us via Buy Me A Coffee for special perks! https://buymeacoffee.com/blueberryboom",
   "Got a suggestion? Let us know in discord! ",
-  "We're always trying to make the server better! Coming soon: chat moderation and combat log prevention! (sounds quite boring lol)",
+  "We're always trying to make the server better! Restarts and downtime may take place during this time!",
   "Want to host your own event? Partners and creators get access to the event server for free!"
 ];
 
