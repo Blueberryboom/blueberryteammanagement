@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 
 // ===== CONFIG =====
 const channelId = '1472985988228976753';
-const intervalMinutes = 5;
+const intervalMinutes = 30;
 // ==================
 
 const messages = [
