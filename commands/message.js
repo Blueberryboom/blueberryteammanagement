@@ -22,6 +22,7 @@ These rules are subject to changes. In the event of a change, you will be given 
 **5.** If your server has less than 45 members, you must follow our <#1456355064678453279> channel in your server.
 **6.** The server must be advertised in an advertising/partnership specific channel and take no less than 3 seconds to view when scrolling up.
 **7.** The owner/admin of the server MUST stay in this server.
+**8.** Your server cannot offer any services that compete with us, specifically Minecraft servers.
 
 Breaking any of these rules will result in immediate termination from our partners.
 `,
