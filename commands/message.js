@@ -13,9 +13,9 @@ const messages = {
 Thanks for being interested in partnering with us!
 By becoming a partner with **The BlueberryTeam**, you agree to the following rules.
 These rules are subject to changes. In the event of a change, you will be given 1 weeks notice. 
--# V1
+-# V1.1
 
-**1.** Your server must have no fewer than 30 human members.
+**1.** Your server must have no fewer than 45 human members.
 **2.** Being partners with us DOES NOT allow you to advertise in the server. Only authorised advertising is permitted.
 **3.** Content within the server must follow our <#1455310485363757330>.
 **4.** Represent the BlueberryTeam, The Blueberry Network, and our affiliates positively. If you are uncomfortable with us being partnered with another server, please let us know through a support ticket.
