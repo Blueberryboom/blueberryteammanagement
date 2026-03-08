@@ -40,6 +40,7 @@ In order to advertise here, you need the <@&1460351285327954011>, <@&14683020587
 > - Ad must contain **1** discord server invite link if it is a discord advertisement.
 > - Ad must follow all our <#1455310485363757330>.
 > - Message can't be longer than 10 lines.
+> - Cannot be a competing server (e.g. Minecraft servers, hosting, ect.)
 -# <a:85951rfalert:1470557230674870476> Please note: this is the only channel where you can advertise; you cannot ask people to view your ad.`
         )
         .setFooter({ text: "Failure to follow rules may result in a timeout." });
