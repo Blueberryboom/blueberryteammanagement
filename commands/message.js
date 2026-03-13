@@ -15,16 +15,16 @@ By becoming a partner with **The BlueberryTeam**, you agree to the following rul
 These rules are subject to changes. In the event of a change, you will be given 1 weeks notice. 
 -# V1.1
 
-**1.** Your server must have no fewer than 45 human members.
+**1.** Your server must have no fewer than 30 human members.
 **2.** Being partners with us DOES NOT allow you to advertise in the server. Only authorised advertising is permitted.
 **3.** Content within the server must follow our <#1455310485363757330>.
 **4.** Represent the BlueberryTeam, The Blueberry Network, and our affiliates positively. If you are uncomfortable with us being partnered with another server, please let us know through a support ticket.
-**5.** If your server has less than 45 members, you must follow our <#1456355064678453279> channel in your server.
-**6.** The server must be advertised in an advertising/partnership specific channel and take no less than 3 seconds to view when scrolling up.
+**5.** If your server has less than 40 human members, you must follow our <#1456355064678453279> channel in your server.
+**6.** The server must be advertised in an advertising/partnership specific channel and be within 5 messages from the bottom.
 **7.** The owner/admin of the server MUST stay in this server.
 **8.** Your server cannot offer any services that compete with us, specifically Minecraft servers.
 
-Breaking any of these rules will result in immediate termination from our partners.
+Breaking any of these rules will result in your invite link being removed and perks taken!!
 `,
 
   partner_perks: `
