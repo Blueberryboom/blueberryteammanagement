@@ -51,9 +51,9 @@ module.exports = {
       .setTitle("<:543581paperplane:1470555820453396573> Contact Us")
       .setDescription(
 `**Contact us via the select menu below!**
-Here you can contact us!
+Here you can contact us! All server rules still apply!!
 Ticket options include:
-- Partnerships
+- Partnerships (for discord: 30 members+)
 - Apply for creator 
 - Mod Applications 
 - Other
