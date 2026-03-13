@@ -7,7 +7,12 @@ const allowedRoleIds = [
 
 const allowedChannelIds = [
   // Add channel IDs where /say is allowed
-  '1468013210446594280'
+  '1455310485363757338',
+  '1456355571258359920',
+  '1456355774371725343',
+  '1456356054244917250',
+  '1456358407995920449',
+  '1472985988228976753'
 ];
 
 const logChannelId = '1468013210446594280';
