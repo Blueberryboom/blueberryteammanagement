@@ -95,6 +95,21 @@ ${status.message}`,
       }
     }
 
+    // ----- BLACKLIST CHECK -----
+    const [blacklistRows] = await db.query(
+      'SELECT reason FROM ticket_blacklist WHERE user_id = ?',
+      [interaction.user.id]
+    );
+
+    const blacklist = Array.isArray(blacklistRows) ? blacklistRows[0] : null;
+
+    if (blacklist) {
+      return interaction.reply({
+        content: `❌ You are blacklisted from opening tickets.\nReason: ${blacklist.reason || 'No reason provided.'}`,
+        ephemeral: true
+      });
+    }
+
     // ----- CHECK MAX OPEN -----
     const [existing] = await db.query(
       "SELECT COUNT(*) AS count FROM tickets WHERE user_id = ? AND status = 'open'",
