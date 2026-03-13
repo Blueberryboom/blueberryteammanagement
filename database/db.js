@@ -56,6 +56,15 @@ async function initDatabase() {
   )
 `);
 
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS ticket_blacklist (
+      user_id VARCHAR(32) PRIMARY KEY,
+      blacklisted_by VARCHAR(32),
+      reason TEXT,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
 // ensure row exists
 await pool.query(`
   INSERT IGNORE INTO mod_applications (id, open, message, set_by, time)
