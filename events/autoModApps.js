@@ -4,40 +4,41 @@ const db = require('../database/db');
 
 // CHANNEL IDS where the bot is allowed to respond
 const allowedChannels = [
-  "1455310485363757338",   // general
+  '1455310485363757338' // general
 ];
 
 // Channel where staff logs should go (set to null to disable)
-const staffLogChannel = "1468013210446594280";
+const staffLogChannel = '1468013210446594280';
 
-// Cooldown per user (5 minutes)
-const COOLDOWN = 5 * 60 * 1000;
+// Cooldown per channel (3 minutes)
+const COOLDOWN = 3 * 60 * 1000;
 
 // ==================================================
 
-const cooldowns = new Map();
+const channelCooldowns = new Map();
 
 // Phrases that trigger the response
 const triggers = [
-  "can i be mod",
-  "can i get mod",
-  "how to be mod",
-  "how do i get mod",
-  "mod apps",
-  "mod applications",
-  "apply for mod",
-  "be staff",
-  "get staff"
+  'can i be mod',
+  'can i get mod',
+  'how to be mod',
+  'how do i get mod',
+  'mod apps',
+  'mod applications',
+  'apply for mod',
+  'be staff',
+  'get staff',
+  'mod pls'
 ];
 
 async function loadData() {
   const [rows] = await db.query(
-    "SELECT open, message FROM mod_applications WHERE id = 1"
+    'SELECT open, message FROM mod_applications WHERE id = 1'
   );
 
   return rows?.[0] || {
     open: false,
-    message: "Moderator applications are currently CLOSED."
+    message: 'Moderator applications are currently CLOSED.'
   };
 }
 
@@ -46,7 +47,8 @@ module.exports = {
 
   async execute(message) {
 
-    // Ignore bots
+    // Ignore bots and DMs
+    if (!message.guild) return;
     if (message.author.bot) return;
 
     // ----- CHANNEL WHITELIST -----
@@ -57,13 +59,13 @@ module.exports = {
     // ----- TRIGGER CHECK -----
     if (!triggers.some(t => content.includes(t))) return;
 
-    // ----- COOLDOWN CHECK -----
-    const last = cooldowns.get(message.author.id);
+    // ----- CHANNEL COOLDOWN CHECK -----
+    const last = channelCooldowns.get(message.channel.id);
     const now = Date.now();
 
     if (last && now - last < COOLDOWN) return;
 
-    cooldowns.set(message.author.id, now);
+    channelCooldowns.set(message.channel.id, now);
 
     // ----- LOAD FROM DATABASE -----
     const data = await loadData();
@@ -87,7 +89,7 @@ ${data.message}
 `👤 **${message.author.tag}** asked about mod apps  
 📍 Channel: <#${message.channel.id}>  
 💬 Message: "${message.content}"`
-       
+
         );
       }
     }
