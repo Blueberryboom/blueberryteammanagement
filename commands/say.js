@@ -2,9 +2,15 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 // ===== CONFIG =====
 const allowedRoleIds = [
-  "1470919775847973012" // BBT Team
+  '1470919775847973012' // BBT Team
 ];
-const logChannelId = "1468013210446594280";
+
+const allowedChannelIds = [
+  // Add channel IDs where /say is allowed
+  '1468013210446594280'
+];
+
+const logChannelId = '1468013210446594280';
 // ==================
 
 module.exports = {
@@ -38,6 +44,13 @@ module.exports = {
       });
     }
 
+    if (!allowedChannelIds.includes(interaction.channel.id)) {
+      return interaction.reply({
+        content: '❌ /say can only be used in approved channels.',
+        ephemeral: true
+      });
+    }
+
     const text = interaction.options.getString('message');
     const channel = interaction.options.getChannel('channel') || interaction.channel;
     const useEmbed = interaction.options.getBoolean('embed');
@@ -45,7 +58,7 @@ module.exports = {
     // Block @everyone and @here
     if (/@everyone|@here/i.test(text)) {
       return interaction.reply({
-        content: "❌ You cannot use @everyone or @here with this command.",
+        content: '❌ You cannot use @everyone or @here with this command.',
         ephemeral: true
       });
     }
@@ -74,7 +87,7 @@ module.exports = {
     }
 
     await interaction.reply({
-      content: "✅ Message sent!",
+      content: '✅ Message sent!',
       ephemeral: true
     });
 
@@ -82,13 +95,13 @@ module.exports = {
 
     if (logChannel) {
       const logEmbed = new EmbedBuilder()
-        .setTitle("📢 /say Command Used")
+        .setTitle('📢 /say Command Used')
         .setColor(0x2F3136)
         .addFields(
-          { name: "User", value: interaction.user.tag, inline: true },
-          { name: "Channel", value: `<#${channel.id}>`, inline: true },
-          { name: "Type", value: useEmbed ? "Embed" : "Plaintext", inline: true },
-          { name: "Content", value: text.slice(0, 1000) }
+          { name: 'User', value: interaction.user.tag, inline: true },
+          { name: 'Channel', value: `<#${channel.id}>`, inline: true },
+          { name: 'Type', value: useEmbed ? 'Embed' : 'Plaintext', inline: true },
+          { name: 'Content', value: text.slice(0, 1000) }
         )
         .setDescription(`[Jump to message](${sentMessage.url})`)
         .setTimestamp();
