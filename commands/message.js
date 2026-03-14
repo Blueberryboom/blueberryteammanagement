@@ -67,8 +67,8 @@ These requirements are subject to changes. In the event of a change, you will be
 **2.** You must upload at least once every month.
 **3.** Content within the channel must follow our <#1455310485363757330>.
 **4.** Represent the BlueberryTeam, The Blueberry Network, and our affiliates positively.
-**5.** Your average view count to recieve perks must be more than 1k+ views!
-**6.** The server must be mentioned every 2-4 videos.
+**5.** Your average view count to recieve perks must be more than 500+ views!
+**6.** The server must be mentioned every 3-6 videos.
 `
 
 };
