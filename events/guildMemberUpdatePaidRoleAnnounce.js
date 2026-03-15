@@ -4,8 +4,8 @@ const generalChannelId = '1455310485363757338';
 
 const purchasableRoleNames = new Set([
   'Certified Blueberry',
-  'Blueberry Plus',
-  'Elite Blueberry'
+  'Blueberry Premium',
+  'Blueberry Pro'
 ]);
 
 module.exports = {
