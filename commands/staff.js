@@ -1,53 +1,44 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
-const staffRoles = [
-  { id: '1468294909420240917', label: 'Blueberry Overlord' },
-  { id: '1468294685452927059', label: 'Administrator' },
-  { id: '1468292177397285037', label: 'Senior Moderator' },
-  { id: '1470919775847973012', label: 'Moderator' },
-  { id: '1470536730779062433', label: 'Partnership Manager' },
-  { id: '1468294094403928348', label: 'Event Team' }
-];
+// ===== CONFIG =====
+const BBT_TEAM_ROLE_ID = '1470919775847973012';
+// ==================
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('staff')
-    .setDescription('List all staff members and their staff roles'),
+    .setDescription('Show members who have BBT Team and their highest role'),
 
   async execute(interaction) {
     await interaction.guild.members.fetch();
 
-    const membersMap = new Map();
+    const bbtRole = interaction.guild.roles.cache.get(BBT_TEAM_ROLE_ID);
 
-    for (const staffRole of staffRoles) {
-      const role = interaction.guild.roles.cache.get(staffRole.id);
-      if (!role) continue;
-
-      for (const [, member] of role.members) {
-        if (!membersMap.has(member.id)) {
-          membersMap.set(member.id, {
-            mention: `<@${member.id}>`,
-            roles: new Set()
-          });
-        }
-
-        membersMap.get(member.id).roles.add(staffRole.label);
-      }
-    }
-
-    if (membersMap.size === 0) {
+    if (!bbtRole) {
       return interaction.reply({
-        content: 'No staff members were found for the configured staff roles.',
+        content: '❌ BBT Team role not found. Configure BBT_TEAM_ROLE_ID in commands/staff.js.',
         ephemeral: true
       });
     }
 
-    const lines = [...membersMap.values()]
-      .sort((a, b) => a.mention.localeCompare(b.mention))
-      .map(entry => `${entry.mention} — ${[...entry.roles].join(', ')}`);
+    const members = [...bbtRole.members.values()];
+
+    if (members.length === 0) {
+      return interaction.reply({
+        content: 'No members currently have the BBT Team role.',
+        ephemeral: true
+      });
+    }
+
+    const lines = members
+      .sort((a, b) => a.displayName.localeCompare(b.displayName))
+      .map(member => {
+        const highestRole = member.roles.highest;
+        return `<@${member.id}> — <@&${highestRole.id}>`;
+      });
 
     const embed = new EmbedBuilder()
-      .setTitle('📋 Staff List')
+      .setTitle('📋 Staff Team')
       .setColor(0x5865F2)
       .setDescription(lines.join('\n').slice(0, 4000))
       .setTimestamp();
