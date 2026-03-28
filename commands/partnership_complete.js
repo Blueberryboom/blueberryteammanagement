@@ -16,8 +16,8 @@ module.exports = {
     .addUserOption(option =>
       option
         .setName('user')
-        .setDescription('Partner user')
-        .setRequired(true)
+        .setDescription('Server owner/admin user (optional)')
+        .setRequired(false)
     )
     .addStringOption(option =>
       option
@@ -49,17 +49,12 @@ module.exports = {
       });
     }
 
-    const member =
-      interaction.options.getMember('user') ||
-      await interaction.guild.members.fetch(interaction.options.getUser('user').id).catch(() => null);
-
     const user = interaction.options.getUser('user');
 
-    if (!member) {
-      return interaction.editReply({
-        content: '❌ User not in server or could not be resolved!'
-      });
-    }
+    const member = user
+      ? (interaction.options.getMember('user') ||
+        await interaction.guild.members.fetch(user.id).catch(() => null))
+      : null;
 
     const serverName = interaction.options.getString('server_name');
     const rulesShown = interaction.options.getBoolean('rules_shown');
@@ -88,7 +83,7 @@ module.exports = {
         .addFields(
           {
             name: '<:990644moderatorroleicon:1470566354196369491> Server Owner/Admin',
-            value: `<@${member.id}>`,
+            value: member ? `<@${member.id}>` : 'Server owner/admin not in this server',
             inline: false
           },
           {
@@ -102,7 +97,6 @@ module.exports = {
             inline: false
           }
         )
-        .setThumbnail(user.displayAvatarURL())
         .setTimestamp();
 
       announce.send({ embeds: [embed] });
@@ -115,7 +109,7 @@ module.exports = {
         .setTitle('<:312668partner:1470082523026686219> Partnership Completed')
         .setColor(0x5865F2)
         .addFields(
-          { name: 'Partner', value: user.tag, inline: true },
+          { name: 'Partner', value: user ? user.tag : 'Not specified', inline: true },
           { name: 'Server', value: serverName, inline: true },
           { name: 'Rules Shown', value: rulesShown ? 'Yes' : 'No', inline: true },
           { name: 'Our Ad Sent', value: adSent ? 'Yes' : 'No', inline: true },
