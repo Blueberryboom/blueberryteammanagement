@@ -13,12 +13,6 @@ module.exports = {
   data: new SlashCommandBuilder()
     .setName('partnership_complete')
     .setDescription('Finish a partnership and announce it')
-    .addUserOption(option =>
-      option
-        .setName('user')
-        .setDescription('Server owner/admin user (optional)')
-        .setRequired(false)
-    )
     .addStringOption(option =>
       option
         .setName('server_name')
@@ -36,6 +30,12 @@ module.exports = {
         .setName('ad_sent')
         .setDescription('Has the AD been posted in BOTH our server and theirs?')
         .setRequired(true)
+    )
+    .addUserOption(option =>
+      option
+        .setName('user')
+        .setDescription('Server owner/admin user (optional)')
+        .setRequired(false)
     ),
 
   async execute(interaction) {
