@@ -116,7 +116,17 @@ async function claimTicket(interaction, ticket) {
 
 async function askCloseConfirm(interaction, ticket) {
 
-  // ANYONE CAN CLOSE – no staff check
+  const isStaff = config.permissions[ticket.type].viewRoles
+    .some(id => interaction.member.roles.cache.has(id));
+
+  const isTicketOwner = interaction.user.id === ticket.user_id;
+
+  if (ticket.prevent_user_close && isTicketOwner && !isStaff) {
+    return interaction.reply({
+      content: "❌ You cannot close this ticket. A staff member must close it.",
+      ephemeral: true
+    });
+  }
 
   const embed = new EmbedBuilder()
     .setTitle("<a:85951rfalert:1470557230674870476> Confirm Ticket Closure")
@@ -194,6 +204,9 @@ async function keepOpenRequest(interaction, ticket) {
 // ------------------------------------------------
 
 async function confirmClose(interaction, ticket, reason) {
+  if (config.settings.transcriptOnClose) {
+    await sendTranscriptToManagementThread(interaction, ticket, reason);
+  }
 
   await db.query(
     "INSERT INTO ticket_logs (ticket_id, action, moderator, info) VALUES (?, ?, ?, ?)",
@@ -236,7 +249,86 @@ async function confirmClose(interaction, ticket, reason) {
 
 // ------------------------------------------------
 
+async function sendTranscriptToManagementThread(interaction, ticket, reason) {
+  if (!ticket.transcript_thread_id) return;
+
+  const transcriptThread = interaction.guild.channels.cache.get(ticket.transcript_thread_id);
+  if (!transcriptThread) return;
+
+  const transcriptLines = await buildTranscriptLines(interaction.channel);
+
+  const transcriptHeader =
+`📄 **Ticket Transcript**
+Ticket: #${ticket.id}
+Channel: ${interaction.channel.name}
+Closed by: ${interaction.user.tag}
+Reason: ${reason}
+Closed at: <t:${Math.floor(Date.now() / 1000)}:F>
+`;
+
+  const chunks = chunkText([transcriptHeader, ...transcriptLines].join('\n'), 1900);
+
+  for (const chunk of chunks) {
+    await transcriptThread.send({ content: chunk });
+  }
+}
+
+async function buildTranscriptLines(channel) {
+  const all = [];
+  let before;
+
+  while (true) {
+    const options = { limit: 100 };
+    if (before) options.before = before;
+
+    const batch = await channel.messages.fetch(options);
+    if (!batch.size) break;
+
+    const ordered = [...batch.values()].sort((a, b) => a.createdTimestamp - b.createdTimestamp);
+    for (const message of ordered) {
+      const stamp = Math.floor(message.createdTimestamp / 1000);
+      const clean = (message.cleanContent || '').trim();
+      const content = clean.length ? clean : '[no text content]';
+      all.push(`[${stamp}] ${message.author.tag}: ${content}`);
+    }
+
+    if (batch.size < 100) break;
+    before = batch.last().id;
+  }
+
+  if (all.length === 0) {
+    return ['[No messages found in this ticket.]'];
+  }
+
+  return all;
+}
+
+function chunkText(text, maxLen) {
+  const chunks = [];
+  let start = 0;
+
+  while (start < text.length) {
+    chunks.push(text.slice(start, start + maxLen));
+    start += maxLen;
+  }
+
+  return chunks;
+}
+
+// ------------------------------------------------
+
 async function askReason(interaction, ticket) {
+  const isStaff = config.permissions[ticket.type].viewRoles
+    .some(id => interaction.member.roles.cache.has(id));
+
+  const isTicketOwner = interaction.user.id === ticket.user_id;
+
+  if (ticket.prevent_user_close && isTicketOwner && !isStaff) {
+    return interaction.reply({
+      content: "❌ You cannot close this ticket. A staff member must close it.",
+      ephemeral: true
+    });
+  }
 
   await interaction.reply({
     content: "Please type the close reason in chat within 60 seconds.",
