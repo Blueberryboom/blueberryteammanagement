@@ -34,6 +34,13 @@ module.exports = {
         .setDescription('Ask the user if they want to close the ticket')
     )
 
+    // ----- /ticket preventclose -----
+    .addSubcommand(sub =>
+      sub
+        .setName('preventclose')
+        .setDescription('Prevent the ticket opener from closing this ticket')
+    )
+
     // ----- /ticket blacklist -----
     .addSubcommand(sub =>
       sub
@@ -218,6 +225,26 @@ Please choose an option below:`
 
       return interaction.reply({
         content: '📩 Close request sent to user.',
+        ephemeral: true
+      });
+    }
+
+    // ===================================================
+    // /ticket preventclose
+    // ===================================================
+    if (sub === 'preventclose') {
+      await db.query(
+        'UPDATE tickets SET prevent_user_close = 1 WHERE id = ?',
+        [ticket.id]
+      );
+
+      await db.query(
+        'INSERT INTO ticket_logs (ticket_id, action, moderator, info) VALUES (?, ?, ?, ?)',
+        [ticket.id, 'PREVENT_CLOSE', interaction.user.id, 'Ticket opener can no longer close this ticket']
+      );
+
+      return interaction.reply({
+        content: '✅ Ticket opener can no longer close this ticket.',
         ephemeral: true
       });
     }

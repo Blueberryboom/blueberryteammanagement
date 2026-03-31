@@ -223,7 +223,7 @@ ${status.message}`,
     const log = interaction.guild.channels.cache.get(config.logChannelId);
 
     if (log) {
-      log.send({
+      const logMessage = await log.send({
         embeds: [
           new EmbedBuilder()
             .setTitle("<:3169blurpleverified1:1470050180601479178> Ticket Created")
@@ -236,6 +236,24 @@ ${status.message}`,
             .setTimestamp()
         ]
       });
+
+      let transcriptThreadId = null;
+      try {
+        const thread = await logMessage.startThread({
+          name: `transcript-${channel.name}`,
+          autoArchiveDuration: 10080
+        });
+        transcriptThreadId = thread.id;
+      } catch (err) {
+        console.log('Failed to create transcript thread:', err.message);
+      }
+
+      await db.query(
+        `UPDATE tickets
+         SET log_message_id = ?, transcript_thread_id = ?
+         WHERE channel_id = ?`,
+        [logMessage.id, transcriptThreadId, channel.id]
+      );
     }
 
     await interaction.reply({

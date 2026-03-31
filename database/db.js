@@ -22,9 +22,17 @@ async function initDatabase() {
       type VARCHAR(20),
       status VARCHAR(20) DEFAULT 'open',
       claimed_by VARCHAR(32) NULL,
+      prevent_user_close TINYINT(1) DEFAULT 0,
+      log_message_id VARCHAR(32) NULL,
+      transcript_thread_id VARCHAR(32) NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  // Backfill columns for existing databases
+  await pool.query(`ALTER TABLE tickets ADD COLUMN prevent_user_close TINYINT(1) DEFAULT 0`).catch(() => {});
+  await pool.query(`ALTER TABLE tickets ADD COLUMN log_message_id VARCHAR(32) NULL`).catch(() => {});
+  await pool.query(`ALTER TABLE tickets ADD COLUMN transcript_thread_id VARCHAR(32) NULL`).catch(() => {});
 
   await pool.query(`
     CREATE TABLE IF NOT EXISTS ticket_logs (
