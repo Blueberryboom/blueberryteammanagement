@@ -73,6 +73,22 @@ async function initDatabase() {
     )
   `);
 
+
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS april_fools_settings (
+      id INT PRIMARY KEY DEFAULT 1,
+      enabled BOOLEAN DEFAULT 0,
+      set_by VARCHAR(64),
+      time BIGINT
+    )
+  `);
+
+  await pool.query(`
+    INSERT IGNORE INTO april_fools_settings (id, enabled, set_by, time)
+    VALUES (1, 0, 'system', UNIX_TIMESTAMP())
+  `);
+
 // ensure row exists
 await pool.query(`
   INSERT IGNORE INTO mod_applications (id, open, message, set_by, time)
