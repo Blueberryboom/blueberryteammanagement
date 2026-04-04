@@ -13,11 +13,11 @@ const BBT_TEAM_ROLE_IDS = [
 const MANAGEMENT_LOG_CHANNEL_ID = '1468013210446594280';
 
 const SUGGESTION_TAG_IDS = {
-  denied: 'REPLACE_WITH_DENIED_TAG_ID',
-  considering: 'REPLACE_WITH_CONSIDERING_TAG_ID',
-  accepted: 'REPLACE_WITH_ACCEPTED_TAG_ID',
-  future: 'REPLACE_WITH_FUTURE_TAG_ID',
-  planned: 'REPLACE_WITH_PLANNED_TAG_ID'
+  denied: '1463595233911640146',
+  considering: '1489949308131479664',
+  accepted: '1456358203423199481',
+  future: '1489949479028129993',
+  planned: '1489949601153814608'
 };
 // ==================
 
@@ -27,35 +27,35 @@ const statuses = {
     title: '❌ Suggestion Denied',
     lockAndClose: true,
     message: reason =>
-      `# ❌ Suggestion Denied\n${reason ? `**Reason:** ${reason}\n` : ''}Thanks for sharing your idea with us.`
+      `# ❌ Suggestion Denied\n${reason ? `**Reason:** ${reason}\n` : ''}Thanks for sharing your idea with us, but your suggestion has been denied.`
   },
   considering: {
     key: 'considering',
     title: '🤔 Suggestion Under Consideration',
     lockAndClose: false,
     message: reason =>
-      `# 🤔 Suggestion Under Consideration\n${reason ? `**Notes:** ${reason}\n` : ''}Thanks for your suggestion. We're actively discussing it.`
+      `# 🤔 Suggestion Under Consideration\n${reason ? `**Notes:** ${reason}\n` : ''}Thanks for your suggestion! Our staff team are currently discussing it.`
   },
   accepted: {
     key: 'accepted',
     title: '✅ Suggestion Accepted',
     lockAndClose: true,
     message: reason =>
-      `# ✅ Suggestion Accepted\n${reason ? `**Notes:** ${reason}\n` : ''}Great idea — thank you for helping improve the server!`
+      `# ✅ Suggestion Accepted\n${reason ? `**Notes:** ${reason}\n` : ''}Thanks for helping us improve!`
   },
   future: {
     key: 'future',
-    title: '🧭 Suggestion Saved for the Future',
+    title: '🧀 Suggestion Saved for the Future',
     lockAndClose: true,
     message: reason =>
-      `# 🧭 Suggestion Saved for the Future\n${reason ? `**Notes:** ${reason}\n` : ''}We like this idea and may revisit it later.`
+      `# 🧀 Suggestion Saved for the Future\n${reason ? `**Notes:** ${reason}\n` : ''}We like this idea and may revisit it later.`
   },
   planned: {
     key: 'planned',
-    title: '🗂️ Suggestion Already Planned',
+    title: '😳 Suggestion Already Planned',
     lockAndClose: true,
     message: reason =>
-      `# 🗂️ Suggestion Already Planned\n${reason ? `**Notes:** ${reason}\n` : ''}Good news — this is already on our roadmap.`
+      `# ♻️ Suggestion Already Planned\n${reason ? `**Notes:** ${reason}\n` : ''}This is already on the roadmap and will be added soon!!`
   }
 };
 
