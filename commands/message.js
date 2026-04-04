@@ -2,7 +2,7 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 
 // ===== PERMISSIONS =====
 const allowedRoleIds = [
-  "1470919775847973012" // BBT Team
+  '1470919775847973012' // BBT Team
 ];
 
 // ===== YOUR MESSAGE LIBRARY =====
@@ -21,24 +21,6 @@ By becoming a partner with **The BlueberryTeam**, you agree to the following rul
 Thanks!
 `,
 
-  suggestion_accepted: `
-# <:3169blurpleverified1:1470050180601479178> Suggestion Accepted
-Thanks for making the server a better place!
-We'll aim to have your idea implemented in the next few days!
-`,
-
-  suggestion_denied: `
-# <:663005cross:1470050182002638992> Suggestion Denied
-We're sorry, but after review by our staff team, your suggestion has been denied.
-`,
-
-  suggestion_seen: `
-# 🤔 We've seen your suggestion!
-We will need time to think about this suggestion.
-This may be due to existing server updates or other things that require our attention.
-Thanks!
-`,
-  
   creator_guidelines: `
 # <:youtube:1473318721996193834> BlueberryTeam – Creator Requirements
 
@@ -54,7 +36,6 @@ These requirements are subject to changes. In the event of a change, you will be
 **5.** Your average view count to recieve perks must be more than 500+ views!
 **6.** The server must be mentioned every 3-6 videos.
 `
-
 };
 // ================================
 
@@ -69,9 +50,6 @@ module.exports = {
         .setRequired(true)
         .addChoices(
           { name: 'Partner Guidelines', value: 'partner_guidelines' },
-          { name: 'Suggestion - Accepted', value: 'suggestion_accepted' },
-          { name: 'Suggestion - Denied', value: 'suggestion_denied' },
-          { name: 'Suggestion - Seen', value: 'suggestion_seen' },
           { name: 'Creator Guidelines', value: 'creator_guidelines' }
         )
     )
