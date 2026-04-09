@@ -15,37 +15,6 @@ async function initDatabase() {
   console.log("🟡 Ensuring database tables...");
 
   await pool.query(`
-    CREATE TABLE IF NOT EXISTS tickets (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      user_id VARCHAR(32),
-      channel_id VARCHAR(32),
-      type VARCHAR(20),
-      status VARCHAR(20) DEFAULT 'open',
-      claimed_by VARCHAR(32) NULL,
-      prevent_user_close TINYINT(1) DEFAULT 0,
-      log_message_id VARCHAR(32) NULL,
-      transcript_thread_id VARCHAR(32) NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  // Backfill columns for existing databases
-  await pool.query(`ALTER TABLE tickets ADD COLUMN prevent_user_close TINYINT(1) DEFAULT 0`).catch(() => {});
-  await pool.query(`ALTER TABLE tickets ADD COLUMN log_message_id VARCHAR(32) NULL`).catch(() => {});
-  await pool.query(`ALTER TABLE tickets ADD COLUMN transcript_thread_id VARCHAR(32) NULL`).catch(() => {});
-
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS ticket_logs (
-      id INT AUTO_INCREMENT PRIMARY KEY,
-      ticket_id INT,
-      action VARCHAR(50),
-      moderator VARCHAR(32),
-      info TEXT,
-      time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-
-  await pool.query(`
     CREATE TABLE IF NOT EXISTS member_goal (
       id INT PRIMARY KEY,
       goal INT,
@@ -65,28 +34,28 @@ async function initDatabase() {
 `);
 
   await pool.query(`
-    CREATE TABLE IF NOT EXISTS ticket_blacklist (
-      user_id VARCHAR(32) PRIMARY KEY,
-      blacklisted_by VARCHAR(32),
-      reason TEXT,
+    CREATE TABLE IF NOT EXISTS staff_strikes (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      user_id VARCHAR(32) NOT NULL,
+      moderator_id VARCHAR(32) NOT NULL,
+      reason TEXT NOT NULL,
+      log_channel_id VARCHAR(32) NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `);
 
-
-
   await pool.query(`
-    CREATE TABLE IF NOT EXISTS april_fools_settings (
-      id INT PRIMARY KEY DEFAULT 1,
-      enabled BOOLEAN DEFAULT 0,
-      set_by VARCHAR(64),
-      time BIGINT
+    CREATE TABLE IF NOT EXISTS staff_leave_requests (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      user_id VARCHAR(32) NOT NULL,
+      reason TEXT NOT NULL,
+      length_text VARCHAR(255) NOT NULL,
+      status VARCHAR(32) DEFAULT 'pending',
+      reviewer_id VARCHAR(32) NULL,
+      review_note TEXT NULL,
+      reviewed_at TIMESTAMP NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
-  `);
-
-  await pool.query(`
-    INSERT IGNORE INTO april_fools_settings (id, enabled, set_by, time)
-    VALUES (1, 0, 'system', UNIX_TIMESTAMP())
   `);
 
 // ensure row exists
